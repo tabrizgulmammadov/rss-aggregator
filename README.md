@@ -51,7 +51,7 @@ This RSS Aggregator is a Go-based web application that allows users to:
 1. Clone the repository
 2. Create a `.env` file with the following variables:
    ```
-   PORT=8080
+   PORT=1907
    DB_URL=postgresql://username:password@localhost:5432/rss_aggregator
    ```
 
