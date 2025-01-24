@@ -1,123 +1,165 @@
 # RSS Aggregator
 
-## Overview
+An RSS Aggregator application built using Go, designed to fetch, parse, and serve RSS feeds with support for database operations, authentication, and scalable service components.
 
-This RSS Aggregator is a Go-based web application that allows users to:
-- Create and manage RSS feed subscriptions
-- Automatically scrape and store articles from followed feeds
-- Retrieve and view collected posts
-
-## Features
-
-### Core Functionality
-- User registration and authentication
-- RSS feed creation and tracking
-- Automatic background scraping of RSS feeds
-- Post collection and storage
-- API endpoints for managing feeds and posts
-
-### Technical Highlights
-- Built with Go
-- Uses PostgreSQL for data storage
-- Implements concurrent feed scraping
-- RESTful API design with Chi router
-- SQLC for type-safe database queries
-
-## Prerequisites
-
-- Go 1.20+
-- PostgreSQL
-- Docker (optional)
+---
 
 ## Project Structure
 
 ```
-├── internal/
-│   └── database/         # SQLC generated database methods
-├── sql/
-│   ├── queries/          # SQL query definitions
-│   └── schema/           # Database schema
-├── main.go               # Application entry point
-├── handler_*.go          # API route handlers
-├── middleware_auth.go    # Authentication middleware
-├── models.go             # Data models and conversions
-└── sqlc.yaml             # SQLC configuration
+- cmd
+    - rss-aggregator
+        main.go
+- config
+    config.go
+- internal
+    - auth
+        auth.go                # Handles API key extraction and validation from requests
+    - database
+        # Auto-generated files by sqlc for database interactions
+    - handler
+        *_handler.go          # Handles requests and performs database operations
+    - middleware
+        auth.go               # Middleware for authentication
+        config.go             # Middleware for application configuration
+    - models
+        # Model classes to structure responses returned to the client
+    - service
+        rss_service.go        # Core business logic for RSS feed management
+        scraper_service.go    # Logic for scraping RSS feeds from external sources
+    - utils
+        json_response.go      # Utility for standardized JSON responses
+- sql
+    - queries
+        # SQL query files for interacting with database tables
+    - schema
+        # SQL schema files for creating tables and other database structures
+- vendor
+.env                         # Environment variables
+.env.example                 # Example environment file
+.env.local                   # Local environment variables
+.gitignore                   # Git ignore file
+go.mod                       # Go module definition
+go.sum                       # Dependency checksums
+LICENSE                      # Project license
+README.md                    # Project documentation
+sql.yaml                     # SQLC configuration file
 ```
 
-## Setup and Installation
+---
 
-### Environment Configuration
+## Getting Started
 
-1. Clone the repository
-2. Create a `.env` file with the following variables:
+### Prerequisites
+
+- [Go](https://golang.org/) (v1.18 or higher)
+- [PostgreSQL](https://www.postgresql.org/) or any compatible database
+- `sqlc` for generating database interaction code
+
+### Installation
+
+1. Clone the repository:
+   ```sh
+   git clone <repository-url>
+   cd rss-aggregator
    ```
-   PORT=1907
-   DB_URL=postgresql://username:password@localhost:5432/rss_aggregator
+
+2. Install dependencies:
+   ```sh
+   go mod tidy
    ```
 
-### Database Setup
+3. Configure the environment variables:
+   - Create a `.env` file based on the `.env.example` file and fill in the necessary values.
 
-1. Create PostgreSQL database
-2. Run database migrations
-3. Configure connection in `.env`
+4.. Generate database interaction files with `sqlc`:
+   ```sh
+   sqlc generate
+   ```
 
 ### Running the Application
 
-```bash
-# Install dependencies
-go mod tidy
+1. Start the server:
+   ```sh
+   go run cmd/rss-aggregator/main.go
+   ```
 
-# Run the application
-go run .
-```
+2. The application should now be running on the configured port (default: `8080`).
 
-## API Endpoints
+---
 
-### Users
-- `POST /v1/users`: Create a new user
-- `GET /v1/users`: Get current user details
+## Features
 
-### Feeds
-- `POST /v1/feeds`: Create a new RSS feed
-- `GET /v1/feeds`: List all feeds
+- **Authentication**: Secure API key-based authentication for requests.
+- **RSS Management**: Fetch, parse, and serve RSS feeds.
+- **Database Integration**: Store and manage RSS data in a relational database using `sqlc`.
+- **Scalable Design**: Organized project structure to support modular development.
 
-### Feed Follows
-- `POST /v1/feed-follows`: Follow a feed
-- `GET /v1/feed-follows`: List feed follows
-- `DELETE /v1/feed-follows/{feedFollowID}`: Unfollow a feed
+---
 
-### Posts
-- `GET /v1/posts`: Retrieve user's collected posts
+## Directory Details
 
-## Authentication
+### `cmd/rss-aggregator`
+Contains the entry point of the application (`main.go`). This is where the application starts.
 
-The application uses API key-based authentication:
-- Each user receives a unique API key
-- Include API key in request headers for authenticated routes
+### `config`
+Defines application configuration settings, such as environment variable parsing and application constants.
 
-## Scraping Mechanism
+### `internal`
 
-- Background goroutine runs every minute
-- Concurrently fetches updates from multiple feeds
-- Stores new posts in the database
-- Handles duplicate prevention
+#### `auth`
+Handles API key extraction and validation from incoming requests.
 
-## Error Handling
+#### `database`
+Contains `sqlc`-generated files for database interaction.
 
-- Comprehensive error responses
-- Logging for server-side errors
-- JSON-formatted error messages
+#### `handler`
+Defines HTTP handlers for managing requests and performing operations on the database.
 
-## Performance Considerations
+#### `middleware`
+Defines middleware for authentication and configuration loading.
 
-- Concurrent feed scraping
-- Efficient database queries
-- Timeout mechanisms for external requests
+#### `models`
+Contains model classes for structuring responses returned to the client.
 
-## Contributing
+#### `service`
+- `rss_service.go`: Contains core business logic for RSS feed management.
+- `scraper_service.go`: Implements scraping logic to fetch RSS feeds from external sources.
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+#### `utils`
+Contains utility functions, such as standardized JSON response formatting.
+
+### `sql`
+
+#### `queries`
+Contains SQL query files for database interactions.
+
+#### `schema`
+Contains SQL schema files for creating tables and other database structures.
+
+### Other Files
+
+- `.env`, `.env.example`, `.env.local`: Environment variable files.
+- `.gitignore`: Specifies intentionally untracked files to ignore.
+- `go.mod`, `go.sum`: Go module and dependency files.
+- `LICENSE`: Specifies the project license.
+- `README.md`: Project documentation.
+- `sql.yaml`: Configuration for `sqlc`.
+
+---
+
+## License
+
+This project is licensed under the terms of the [MIT License](LICENSE).
+
+---
+
+## Contribution
+
+Feel free to contribute to the project by opening issues or submitting pull requests. Make sure to follow the contribution guidelines.
+
+---
+
+## Contact
+
+For any inquiries, please contact me at gulmammadovtabriz@gmail.com.
