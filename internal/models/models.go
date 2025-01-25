@@ -25,6 +25,12 @@ func DatabaseUserToUser(user database.User) User {
 	}
 }
 
+// FeedRequest represents the request body for creating a feed.
+type FeedRequest struct {
+	Name string `json:"name"`
+	URL  string `json:"url"`
+}
+
 type Feed struct {
 	ID        uuid.UUID `json:"id"`
 	CreatedAt time.Time `json:"created_at"`

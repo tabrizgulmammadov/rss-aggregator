@@ -1,0 +1,315 @@
+basePath: /v1
+definitions:
+  github_com_tabrizgulmammadov_rss-aggregator_internal_models.Feed:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+      url:
+        type: string
+      user_id:
+        type: string
+    type: object
+  github_com_tabrizgulmammadov_rss-aggregator_internal_models.FeedFollow:
+    properties:
+      created_at:
+        type: string
+      feed_id:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  github_com_tabrizgulmammadov_rss-aggregator_internal_models.FeedRequest:
+    properties:
+      name:
+        type: string
+      url:
+        type: string
+    type: object
+  github_com_tabrizgulmammadov_rss-aggregator_internal_models.Post:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      feed_id:
+        type: string
+      id:
+        type: string
+      published_at:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      url:
+        type: string
+    type: object
+  github_com_tabrizgulmammadov_rss-aggregator_internal_models.User:
+    properties:
+      api_key:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  github_com_tabrizgulmammadov_rss-aggregator_internal_utils.EmptyResponse:
+    type: object
+  github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse:
+    description: Error response with a message
+    properties:
+      error:
+        description: Error message
+        type: string
+    type: object
+  handler.CreateFeedFollowRequest:
+    properties:
+      feed_id:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        format: uuid
+        type: string
+    type: object
+info:
+  contact: {}
+  description: This is an RSS Aggregator Api
+  termsOfService: http://swagger.io/terms/
+  title: RSS Aggregator Api
+  version: "1.0"
+paths:
+  /error:
+    get:
+      consumes:
+      - application/json
+      description: Return a generic error message for unexpected errors
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse'
+      summary: Handle errors
+      tags:
+      - Error
+  /feed-follows:
+    get:
+      description: Fetches a list of all feeds the user is following
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of feed follows
+          schema:
+            items:
+              $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_models.FeedFollow'
+            type: array
+        "400":
+          description: Error fetching feed follows
+          schema:
+            $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get all feed follows for a user
+      tags:
+      - Feed Follow
+    post:
+      consumes:
+      - application/json
+      description: Allows a user to follow a specific feed
+      parameters:
+      - description: Feed Follow Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateFeedFollowRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created feed follow
+          schema:
+            $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_models.FeedFollow'
+        "400":
+          description: Error parsing request body or creating feed follow
+          schema:
+            $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new feed follow
+      tags:
+      - Feed Follow
+  /feed-follows/{feedFollowID}:
+    delete:
+      description: Allows a user to unfollow a specific feed
+      parameters:
+      - description: ID of the feed follow to delete
+        format: uuid
+        in: path
+        name: feedFollowID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Successfully deleted feed follow
+          schema:
+            $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.EmptyResponse'
+        "400":
+          description: Error parsing feed follow ID or deleting feed follow
+          schema:
+            $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete a feed follow
+      tags:
+      - Feed Follow
+  /feeds:
+    get:
+      description: Retrieves a list of all available feeds
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of feeds
+          schema:
+            items:
+              $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_models.Feed'
+            type: array
+        "400":
+          description: Error fetching feeds
+          schema:
+            $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse'
+      summary: Get all feeds
+      tags:
+      - Feed
+    post:
+      consumes:
+      - application/json
+      description: Allows a user to create a new feed with a name and URL
+      parameters:
+      - description: Feed information
+        in: body
+        name: feed
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_models.FeedRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully created feed
+          schema:
+            $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_models.Feed'
+        "400":
+          description: Error parsing request body or creating feed
+          schema:
+            $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a new feed
+      tags:
+      - Feed
+  /healthz:
+    get:
+      consumes:
+      - application/json
+      description: Endpoint to check if the service is ready to handle requests
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Service is ready
+          schema:
+            $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.EmptyResponse'
+      summary: Readiness check
+      tags:
+      - Health
+  /posts:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all posts for a specific user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_models.Post'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get posts for a user
+      tags:
+      - Posts
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve details of a user by their ID
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Get a user
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Create a new user by providing their name
+      parameters:
+      - description: User Name
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse'
+      summary: Create a user
+      tags:
+      - User
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
