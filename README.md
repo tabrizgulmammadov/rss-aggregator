@@ -55,6 +55,7 @@ sql.yaml                     # SQLC configuration file
 - [Go](https://golang.org/) (v1.18 or higher)
 - [PostgreSQL](https://www.postgresql.org/) or any compatible database
 - `sqlc` for generating database interaction code
+- `swag` for generating Swagger documentation
 
 ### Installation
 
@@ -69,10 +70,15 @@ sql.yaml                     # SQLC configuration file
    go mod tidy
    ```
 
-3. Configure the environment variables:
+3. Install `swag`:
+   ```sh
+   go install github.com/swaggo/swag/cmd/swag@latest
+   ```
+
+4. Configure the environment variables:
    - Create a `.env` file based on the `.env.example` file and fill in the necessary values.
 
-4.. Generate database interaction files with `sqlc`:
+5. Generate database interaction files with `sqlc`:
    ```sh
    sqlc generate
    ```
@@ -85,6 +91,54 @@ sql.yaml                     # SQLC configuration file
    ```
 
 2. The application should now be running on the configured port (default: `8080`).
+
+---
+
+## Swagger API Documentation
+
+This project includes a Swagger UI for exploring and testing the API endpoints.
+
+### Accessing Swagger UI
+
+1. Run the application as described in the [Running the Application](#running-the-application) section.
+
+2. Open your browser and navigate to:
+   ```
+   http://localhost:1907/swagger/index.html
+   ```
+
+### Adding Swagger Annotations
+
+Swagger annotations are included in the codebase to document API endpoints. For example:
+
+```go
+// HandlerGetPosts retrieves posts for a user.
+// @Summary      Get posts for a user
+// @Description  Retrieve all posts for a specific user
+// @Tags         Posts
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Success      200 {array} models.Post
+// @Failure      400 {object} utils.JSONErrorResponse
+// @Router       /posts [get]
+```
+
+### Features of Swagger UI
+
+- **Interactive Testing**: Test API endpoints directly from the browser.
+- **Comprehensive Documentation**: View detailed information about each endpoint, including required parameters, response types, and error codes.
+- **Authorization Support**: Use the "Authorize" button to add API keys for testing secured endpoints.
+
+### Common Swagger Commands
+
+To generate or update Swagger documentation, use the following command:
+
+```sh
+swag init -g main.go -d cmd/rss-aggregator,internal/handler,internal/utils/json_response.go,internal/models/models.go --output ./api --parseDependency --parseInternal
+```
+
+This will generate the Swagger files (`docs.go`, `swagger.json`, `swagger.yaml`) in the `api` directory.
 
 ---
 
@@ -163,3 +217,4 @@ Feel free to contribute to the project by opening issues or submitting pull requ
 ## Contact
 
 For any inquiries, please contact me at gulmammadovtabriz@gmail.com.
+
