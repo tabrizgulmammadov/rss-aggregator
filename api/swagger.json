@@ -1,0 +1,490 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is an RSS Aggregator Api",
+        "title": "RSS Aggregator Api",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {},
+        "version": "1.0"
+    },
+    "basePath": "/v1",
+    "paths": {
+        "/error": {
+            "get": {
+                "description": "Return a generic error message for unexpected errors",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Error"
+                ],
+                "summary": "Handle errors",
+                "responses": {
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/feed-follows": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Fetches a list of all feeds the user is following",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feed Follow"
+                ],
+                "summary": "Get all feed follows for a user",
+                "responses": {
+                    "200": {
+                        "description": "List of feed follows",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_models.FeedFollow"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error fetching feed follows",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Allows a user to follow a specific feed",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feed Follow"
+                ],
+                "summary": "Create a new feed follow",
+                "parameters": [
+                    {
+                        "description": "Feed Follow Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateFeedFollowRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successfully created feed follow",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_models.FeedFollow"
+                        }
+                    },
+                    "400": {
+                        "description": "Error parsing request body or creating feed follow",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/feed-follows/{feedFollowID}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Allows a user to unfollow a specific feed",
+                "tags": [
+                    "Feed Follow"
+                ],
+                "summary": "Delete a feed follow",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "ID of the feed follow to delete",
+                        "name": "feedFollowID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully deleted feed follow",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.EmptyResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error parsing feed follow ID or deleting feed follow",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/feeds": {
+            "get": {
+                "description": "Retrieves a list of all available feeds",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feed"
+                ],
+                "summary": "Get all feeds",
+                "responses": {
+                    "200": {
+                        "description": "List of feeds",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_models.Feed"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Error fetching feeds",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Allows a user to create a new feed with a name and URL",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Feed"
+                ],
+                "summary": "Create a new feed",
+                "parameters": [
+                    {
+                        "description": "Feed information",
+                        "name": "feed",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_models.FeedRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully created feed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_models.Feed"
+                        }
+                    },
+                    "400": {
+                        "description": "Error parsing request body or creating feed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/healthz": {
+            "get": {
+                "description": "Endpoint to check if the service is ready to handle requests",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Readiness check",
+                "responses": {
+                    "200": {
+                        "description": "Service is ready",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.EmptyResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/posts": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve all posts for a specific user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Get posts for a user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_models.Post"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Retrieve details of a user by their ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get a user",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_models.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new user by providing their name",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Create a user",
+                "parameters": [
+                    {
+                        "description": "User Name",
+                        "name": "name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_models.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "github_com_tabrizgulmammadov_rss-aggregator_internal_models.Feed": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_tabrizgulmammadov_rss-aggregator_internal_models.FeedFollow": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "feed_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_tabrizgulmammadov_rss-aggregator_internal_models.FeedRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_tabrizgulmammadov_rss-aggregator_internal_models.Post": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "feed_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "published_at": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_tabrizgulmammadov_rss-aggregator_internal_models.User": {
+            "type": "object",
+            "properties": {
+                "api_key": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_tabrizgulmammadov_rss-aggregator_internal_utils.EmptyResponse": {
+            "type": "object"
+        },
+        "github_com_tabrizgulmammadov_rss-aggregator_internal_utils.JSONErrorResponse": {
+            "description": "Error response with a message",
+            "type": "object",
+            "properties": {
+                "error": {
+                    "description": "Error message",
+                    "type": "string"
+                }
+            }
+        },
+        "handler.CreateFeedFollowRequest": {
+            "type": "object",
+            "properties": {
+                "feed_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
