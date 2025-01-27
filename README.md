@@ -7,6 +7,10 @@ An RSS Aggregator application built using Go, designed to fetch, parse, and serv
 ## Project Structure
 
 ```
+- api
+    docs.go
+    swagger.json
+    swagger.yaml
 - cmd
     - rss-aggregator
         main.go
@@ -24,6 +28,10 @@ An RSS Aggregator application built using Go, designed to fetch, parse, and serv
         config.go             # Middleware for application configuration
     - models
         # Model classes to structure responses returned to the client
+    - platform
+        - database
+            connection.go
+            migrations.go
     - service
         rss_service.go        # Core business logic for RSS feed management
         scraper_service.go    # Logic for scraping RSS feeds from external sources
@@ -39,6 +47,8 @@ An RSS Aggregator application built using Go, designed to fetch, parse, and serv
 .env.example                 # Example environment file
 .env.local                   # Local environment variables
 .gitignore                   # Git ignore file
+docker-coimpose.yaml         # Docker compose file
+Dockerfile                   # Dockerfile
 go.mod                       # Go module definition
 go.sum                       # Dependency checksums
 LICENSE                      # Project license
@@ -56,6 +66,7 @@ sql.yaml                     # SQLC configuration file
 - [PostgreSQL](https://www.postgresql.org/) or any compatible database
 - `sqlc` for generating database interaction code
 - `swag` for generating Swagger documentation
+- [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/)
 
 ### Installation
 
@@ -84,6 +95,29 @@ sql.yaml                     # SQLC configuration file
    ```
 
 ### Running the Application
+
+#### Using Docker Compose
+
+You can use Docker Compose to simplify the process of running the application along with its dependencies.
+
+1. Build and start the application:
+   ```sh
+   docker-compose up --build
+   ```
+
+2. The application should now be running on the configured port (default: `8080`).
+
+3. Access the application:
+   ```
+   http://localhost:8080
+   ```
+
+4. Stop the application:
+   ```sh
+   docker-compose down
+   ```
+
+#### Running Locally
 
 1. Start the server:
    ```sh
@@ -153,6 +187,9 @@ This will generate the Swagger files (`docs.go`, `swagger.json`, `swagger.yaml`)
 
 ## Directory Details
 
+### `api`
+Auto generated swagger files
+
 ### `cmd/rss-aggregator`
 Contains the entry point of the application (`main.go`). This is where the application starts.
 
@@ -175,6 +212,10 @@ Defines middleware for authentication and configuration loading.
 
 #### `models`
 Contains model classes for structuring responses returned to the client.
+
+#### `platform/database`
+- `connection.go`: Initialization connection to the database and run migrations.
+- `migrations.go`: Contains code for running migrations on db.
 
 #### `service`
 - `rss_service.go`: Contains core business logic for RSS feed management.
@@ -217,4 +258,3 @@ Feel free to contribute to the project by opening issues or submitting pull requ
 ## Contact
 
 For any inquiries, please contact me at gulmammadovtabriz@gmail.com.
-
