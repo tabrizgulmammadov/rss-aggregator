@@ -46,7 +46,11 @@ func ConnectWithRetry(cfg *Config) (*sql.DB, error) {
 		}
 
 		log.Printf("Failed to ping database on attempt %d: %v", i+1, err)
-		db.Close()
+
+		err := db.Close()
+		if err != nil {
+			log.Printf("Failed to close database connection: %v", err)
+		}
 		time.Sleep(cfg.RetryDelay)
 	}
 

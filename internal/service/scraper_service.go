@@ -28,7 +28,6 @@ func StartScraping(
 		wg := &sync.WaitGroup{}
 		for _, feed := range feeds {
 			wg.Add(1)
-
 			go scrapeFeed(db, wg, feed)
 		}
 		wg.Wait()
