@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: rss-aggregator-app
+    build: .
+    environment:
+      DB_URL: "postgres://postgres:postgres@db:5432/rss_aggregator?sslmode=disable"
+      PORT: "1907"
+    ports:
+      - "1907:1907"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    container_name: rss-aggregator-db
+    image: postgres:12
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: rss_aggregator
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: rss-aggregator-pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: postgres
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    name: rss_aggregator_postgres_data
+  pgadmin_data:
+    name: rss_aggregator_pgadmin_data
