@@ -217,6 +217,9 @@ Contains model classes for structuring responses returned to the client.
 - `connection.go`: Initialization connection to the database and run migrations.
 - `migrations.go`: Contains code for running migrations on db.
 
+#### `routes`
+- `routes.go`:  Contains all routes.
+
 #### `service`
 - `rss_service.go`: Contains core business logic for RSS feed management.
 - `scraper_service.go`: Implements scraping logic to fetch RSS feeds from external sources.
